@@ -3,13 +3,13 @@
 // in the html.
 $(function () {
   // TODO: Add a listener for click events on the save button. 
-  $(".save-icon").on("click", function() {
+  $(".saveBtn").on("click", function() {
     // this code gets the user input utilizing the textarea element.
-    const userInput = $(this).siblings("textarea").val();
+    const userInput = $(this).siblings(".description").val();
     // this code gets the user ID of the parent time-block
-    const timeBlockId = $(this).closest(".time-block").arrt("id");
+    const timeBlockId = $(this).parent(".time-block").attr("id");
     // this next line saves the user input into the local storage with the time-block ID
-    localStorage.setItemI(timeBlockId, userInput);
+    localStorage.setItem (timeBlockId, userInput);
   });
 
   // now that i got the user ID and the time block id, i am going to set a function to update the time block classes
@@ -18,7 +18,7 @@ $(function () {
     $(".time-block").each(function () {
       const timeBlockId =$(this).attr("id");
       // this code below takes the hour from the id.
-      const hour = parseInt(TimeBlockId.split("-")[1]);
+      const hour = parseInt(timeBlockId.split("-")[1]);
       if (hour < currentHour) {
         $(this).removeClass("present future").addClass("past");
       } else if (hour === currentHour) {
@@ -36,9 +36,9 @@ $(function () {
   function populateTextarea() {
     $(".time-block").each(function () {
       const timeBlockId = $(this).attr("id");
-      const saveUserInput = localStorage.getItem(timeBlockId);
+      const savedUserInput = localStorage.getItem(timeBlockId);
       if (savedUserInput !== null) {
-        $(this).find("textarea").val(saveUserInput);
+        $(this).find(".description").val(savedUserInput);
       }
     });
   }
@@ -48,8 +48,42 @@ $(function () {
 
   //function to display the textarea
   function displayCurrentDate() {
-    
+    const currentDate = dayjs().format("dddd, MMMM D YYYY");
+    // link the id current day from the body below.
+    $("#currentDay").text(currentDate);
   }
+
+  displayCurrentDate();
+});
+
+
+
+function updateTextColors() {
+  const currentHour = dayjs().format("H");
+  console.log("Current Hour", currentHour);
+  $(".time-block").each(function () {
+    const timeBlockId = $(this).attr("id");
+    const hour = parseInt(timeBlockId.split("-")[1]);
+    const descriptionTextArea = $(this).find(".description");
+  
+    if ( hour < currentHour) {
+      descriptionTextArea.css("color", "gray");
+
+    } else if (hour === currentHour){
+      descriptionTextArea.css("color", "red");
+
+    } else {
+      descriptionTextArea.css("color", "green");
+    }
+  });
+}
+
+
+
+
+
+
+
 
   //This code should
   // use the id in the containing time-block as a key to save the user input in
@@ -69,4 +103,3 @@ $(function () {
   // attribute of each time-block be used to do this?
   //
   // TODO: Add code to display the current date in the header of the page.
-});
